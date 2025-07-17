@@ -13,7 +13,6 @@
   min-height: 100svh;
   padding: 80px;
   gap: 64px;
-  font-family: var(--font-geist-sans);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,10 +34,8 @@
 }
 
 .main ol {
-  font-family: var(--font-geist-mono);
   padding-left: 0;
   margin: 0;
-  font-size: 14px;
   line-height: 24px;
   letter-spacing: -0.01em;
   list-style-position: inside;
@@ -75,7 +72,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 1.6rem;
   line-height: 20px;
   font-weight: 500;
 }
@@ -144,7 +141,7 @@ a.secondary {
   }
 
   .ctas a {
-    font-size: 14px;
+    font-size: 1.4rem;
     height: 40px;
     padding: 0 16px;
   }
