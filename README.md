@@ -11,6 +11,7 @@ Repositório contendo a solução para o problema proposto pela Planne para a va
 
 ## Setup
 Para executar o projeto é necessário:
+* Arquivo .env com `NEXT_PUBLIC_MOVIES_API` 
 * Node.js ^18.18.0 || ^19.8.0 || >= 20.0.0
 * Conexão com a internet
 
