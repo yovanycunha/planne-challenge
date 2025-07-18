@@ -2,24 +2,27 @@
 import { MovieService } from "@/services/movie.service";
 import styles from "./page.module.css";
 import Input from "@/components/Input/Input";
-import { useState } from "react";
+import { useReducer } from "react";
 import { Movie } from "@/types";
+import {
+  initialSearchState,
+  searchReducer,
+} from "@/reducers/search/searchReducer";
 
 export default function Home() {
-  const [searchResponse, setSearchResponse] = useState<Movie[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [state, dispatch] = useReducer(searchReducer, initialSearchState);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length < 3) {
-      setSearchResponse([]);
-      setSearchQuery("");
+      dispatch({ type: "SET_QUERY", payload: "" });
+      dispatch({ type: "SET_RESPONSE", payload: [] });
       return;
     }
 
     const { data } = await MovieService.searchMovie(e.target.value);
 
-    setSearchResponse(data.results);
-    setSearchQuery(e.target.value);
+    dispatch({ type: "SET_QUERY", payload: e.target.value });
+    dispatch({ type: "SET_RESPONSE", payload: data.results });
   };
 
   function highlightSubstring(title: string, query: string) {
@@ -51,11 +54,11 @@ export default function Home() {
           onChange={handleSearch}
         />
       </div>
-      {searchResponse.length > 0 && (
+      {state.response.length > 0 && (
         <div className={styles.responseContainer}>
-          {searchResponse.map((mv: Movie) => (
+          {state.response.map((mv: Movie) => (
             <div key={mv.id} className={styles.response}>
-              {highlightSubstring(mv.title, searchQuery)}
+              {highlightSubstring(mv.title, state.query)}
             </div>
           ))}
         </div>
