@@ -28,10 +28,15 @@ export default function Home() {
     if (e.target.value.length < 3) {
       dispatch({ type: "SET_QUERY", payload: "" });
       dispatch({ type: "SET_RESPONSE", payload: [] });
+      dispatch({ type: "SET_EMPTY_SEARCH", payload: false });
       return;
     }
 
     const { data } = await MovieService.searchMovies(e.target.value);
+
+    if (data.total_results === 0) {
+      dispatch({ type: "SET_EMPTY_SEARCH", payload: true });
+    }
 
     dispatch({ type: "SET_QUERY", payload: e.target.value });
     dispatch({ type: "SET_RESPONSE", payload: data.results });
@@ -69,6 +74,8 @@ export default function Home() {
     );
   }
 
+  console.log("state", state);
+
   return (
     <div className={styles.page}>
       <div className={styles.searchContainer}>
@@ -91,6 +98,27 @@ export default function Home() {
               )}
             </div>
           ))}
+        </div>
+      )}
+      {state.isResponseEmpty && (
+        <div className={styles.responsesContainer}>
+          <div className={styles.disclaimerContainer}>
+            <p className={styles.disclaimerMsg}>
+              Ops! Nada encontrado para <i>{state.query}</i>. Que tal tentar
+              outra palavra ou{" "}
+              <a
+                href={`https://www.google.com/search?q=${encodeURIComponent(
+                  state.query
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.disclaimerLink}
+              >
+                buscar no Google
+              </a>
+              ?
+            </p>
+          </div>
         </div>
       )}
     </div>

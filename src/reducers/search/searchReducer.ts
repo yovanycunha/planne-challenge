@@ -6,6 +6,7 @@ export const initialSearchState: SearchState = {
   isResponseEmpty: false,
   loading: false,
   error: null,
+  isSearchEmpty: false,
 };
 
 export function searchReducer(
@@ -27,6 +28,8 @@ export function searchReducer(
       };
     case "SET_ERROR":
       return { ...state, error: action.payload, loading: false };
+    case "SET_EMPTY_SEARCH":
+      return { ...state, isResponseEmpty: action.payload };
     default:
       return state;
   }
