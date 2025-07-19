@@ -5,6 +5,7 @@ import { IMovieCardProps } from "./types";
 import { useQuery } from "@tanstack/react-query";
 import { MovieService } from "@/services/movie.service";
 import { MovieDetails } from "@/types";
+import ImageDefault from "./images/default_poster.png";
 
 const MovieCard: React.FC<IMovieCardProps> = ({ movie }) => {
   const { data } = useQuery({
@@ -24,6 +25,14 @@ const MovieCard: React.FC<IMovieCardProps> = ({ movie }) => {
 
   const handleRedirect = () => {
     window.open(`https://www.imdb.com/title/${data?.data.imdb_id}/`, "_blank");
+  };
+
+  const getPoster = () => {
+    if (!movie.poster_path) {
+      return ImageDefault;
+    }
+
+    return `${POSTER_URL}${movie.poster_path}`;
   };
 
   const renderGenres = () =>
@@ -46,7 +55,8 @@ const MovieCard: React.FC<IMovieCardProps> = ({ movie }) => {
             objectFit: "cover",
             borderRadius: "4px",
           }}
-          src={`${POSTER_URL}${movie.poster_path}`}
+          // src={`${POSTER_URL}${movie.poster_path}`}
+          src={getPoster()}
         />
       </div>
       <div className={styles.infoContainer}>
