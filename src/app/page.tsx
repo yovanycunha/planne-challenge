@@ -1,6 +1,7 @@
 "use client";
+
 import { MovieService } from "@/services/movie.service";
-import styles from "./page.module.css";
+import styles from "./page.module.scss";
 import Input from "@/components/Input/Input";
 import { useReducer } from "react";
 import { Movie } from "@/types";
@@ -8,9 +9,20 @@ import {
   initialSearchState,
   searchReducer,
 } from "@/reducers/search/searchReducer";
+import MovieCard from "@/components/CardMovie/CardMovie";
 
 export default function Home() {
   const [state, dispatch] = useReducer(searchReducer, initialSearchState);
+
+  const validateTitleAndQuery = (movie: Movie, query: string): boolean => {
+    if (
+      movie.title.toLocaleLowerCase() !== query.toLocaleLowerCase() &&
+      movie.original_title.toLocaleLowerCase() !== query.toLocaleLowerCase()
+    ) {
+      return false;
+    }
+    return true;
+  };
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length < 3) {
@@ -19,27 +31,41 @@ export default function Home() {
       return;
     }
 
-    const { data } = await MovieService.searchMovie(e.target.value);
+    const { data } = await MovieService.searchMovies(e.target.value);
 
     dispatch({ type: "SET_QUERY", payload: e.target.value });
     dispatch({ type: "SET_RESPONSE", payload: data.results });
   };
 
-  function highlightSubstring(title: string, query: string) {
-    const index = title.toLowerCase().indexOf(query.toLowerCase());
+  function renderMovie(title: string, originalTitle: string, query: string) {
+    let outputTitle = title;
+    let index = title.toLowerCase().indexOf(query.toLowerCase());
 
-    if (index === -1) return <p>{title}</p>;
+    if (index === -1) {
+      index = originalTitle.toLowerCase().indexOf(query.toLowerCase());
 
-    const start = title.slice(0, index);
-    const match = title.slice(index, index + query.length);
-    const end = title.slice(index + query.length);
+      if (index === -1)
+        return (
+          <div className={styles.responseWrapper}>
+            <p>{title}</p>
+          </div>
+        );
+
+      outputTitle = originalTitle;
+    }
+
+    const start = outputTitle.slice(0, index);
+    const match = outputTitle.slice(index, index + query.length);
+    const end = outputTitle.slice(index + query.length);
 
     return (
-      <p>
-        {start}
-        <span className={styles.highlight}>{match}</span>
-        {end}
-      </p>
+      <div className={styles.responseWrapper}>
+        <p className={styles.response}>
+          {start}
+          <span className={styles.highlight}>{match}</span>
+          {end}
+        </p>
+      </div>
     );
   }
 
@@ -55,10 +81,14 @@ export default function Home() {
         />
       </div>
       {state.response.length > 0 && (
-        <div className={styles.responseContainer}>
-          {state.response.map((mv: Movie) => (
-            <div key={mv.id} className={styles.response}>
-              {highlightSubstring(mv.title, state.query)}
+        <div className={styles.responsesContainer}>
+          {state.response.map((mv: Movie, index: number) => (
+            <div key={mv.id}>
+              {index === 0 && validateTitleAndQuery(mv, state.query) ? (
+                <MovieCard movie={mv} />
+              ) : (
+                renderMovie(mv.title, mv.original_title, state.query)
+              )}
             </div>
           ))}
         </div>

@@ -10,21 +10,27 @@
     margin: 0 auto;
   }
 
-  .responseContainer {
-    padding: 8px 12px;
+  .responsesContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
     border: 1px solid #8E8E8E;
     border-radius: 8px;
+    gap: 4px;
 
-    .response {
+    .responseWrapper {
       font-weight: 600;
       font-size: 1.4rem;
       line-height: 2rem;
       letter-spacing: 0;
-      padding: 12px;
+      padding: 14px 12px;
       color: #464646;
+      background: white;
 
-      .highlight {
-        color: #0092FF;
+      .response {
+        .highlight {
+          color: #0092FF;
+        }
       }
     }
   }

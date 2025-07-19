@@ -1,0 +1,53 @@
+.cardContainer {
+  display: flex;
+  border-radius: 6px;
+  background: #E1F2FF;
+  padding: 10px;
+  gap: 8px;
+
+  .imgContainer {
+    position: relative;
+    height: 80px;
+    width: 56px;
+    border-radius: 4px;
+  }
+
+  .infoContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .titleWrapper {
+      display: flex;
+      font-size: 1.4rem;
+      line-height: 2rem;
+      font-weight: 600;
+      gap: 4px;
+
+      .cardTitle {
+        color: #0092FF;
+      }
+
+      .releaseYear {
+        font-weight: 400;
+        color: #8E8E8E;
+      }
+    }
+
+    .genresWrapper {
+      display: flex;
+      gap: 8px;
+
+      font-size: 1.2rem;
+      line-height: 1.6rem;
+      font-weight: 500;
+      color: #333333;
+      
+      .genre {
+        border: 1px solid #D2D2D2;
+        padding: 2px 8px;
+        border-radius: 999px;
+      }
+    }
+  }
+}
