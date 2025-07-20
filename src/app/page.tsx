@@ -116,6 +116,10 @@ export default function Home() {
     );
   }
 
+  const getFocusedStyle = (index: number) => {
+    if (index === focusedIndex) return `${styles.focused}`;
+  };
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -160,11 +164,7 @@ export default function Home() {
             <div
               key={`${mv.id}-${index}`}
               id={`response-item-${index}`}
-              className={
-                index === focusedIndex
-                  ? `${styles.responseItem} ${styles.focused}`
-                  : styles.responseItem
-              }
+              className={getFocusedStyle(index)}
             >
               {index === 0 && validateTitleAndQuery(mv, state.query) ? (
                 <MovieCard movie={mv} />
