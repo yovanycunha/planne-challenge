@@ -3,7 +3,7 @@
 import { MovieService } from "@/services/movie.service";
 import styles from "./page.module.scss";
 import Input from "@/components/Input/Input";
-import { useReducer, useRef, useCallback, useEffect } from "react";
+import { useReducer, useRef, useCallback, useEffect, useState } from "react";
 import { Movie } from "@/types";
 import {
   initialSearchState,
@@ -13,8 +13,12 @@ import MovieCard from "@/components/CardMovie/CardMovie";
 
 export default function Home() {
   const [state, dispatch] = useReducer(searchReducer, initialSearchState);
+
   const observerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const currentPage = useRef(1);
+
+  const [focusedIndex, setFocusedIndex] = useState<number>(-1);
 
   const validateTitleAndQuery = (movie: Movie, query: string): boolean => {
     if (
@@ -46,6 +50,7 @@ export default function Home() {
       dispatch({ type: "SET_RESPONSE", payload: [] });
       dispatch({ type: "SET_EMPTY_SEARCH", payload: false });
       currentPage.current = 1;
+      setFocusedIndex(-1);
       return;
     }
 
@@ -58,23 +63,42 @@ export default function Home() {
 
     dispatch({ type: "SET_QUERY", payload: e.target.value });
     dispatch({ type: "SET_RESPONSE", payload: data.results });
+    setFocusedIndex(data.results.length > 0 ? 0 : -1);
   };
 
-  function renderMovie(title: string, originalTitle: string, query: string) {
-    let outputTitle = title;
-    let index = title.toLowerCase().indexOf(query.toLowerCase());
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (state.response.length === 0) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setFocusedIndex((prev) => (prev + 1) % state.response.length);
+
+      if (focusedIndex === state.response.length - 2) {
+        loadMoreMovies();
+      }
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setFocusedIndex(
+        (prev) => (prev - 1 + state.response.length) % state.response.length
+      );
+    }
+  };
+
+  function renderMovie(movie: Movie, query: string) {
+    let outputTitle = movie.title;
+    let index = movie.title.toLowerCase().indexOf(query.toLowerCase());
 
     if (index === -1) {
-      index = originalTitle.toLowerCase().indexOf(query.toLowerCase());
+      index = movie.original_title.toLowerCase().indexOf(query.toLowerCase());
 
       if (index === -1)
         return (
           <div className={styles.responseWrapper}>
-            <p>{title}</p>
+            <p>{movie.title}</p>
           </div>
         );
 
-      outputTitle = originalTitle;
+      outputTitle = movie.original_title;
     }
 
     const start = outputTitle.slice(0, index);
@@ -109,6 +133,14 @@ export default function Home() {
     return () => observer.disconnect();
   }, [loadMoreMovies]);
 
+  useEffect(() => {
+    if (focusedIndex < 0) return;
+    const el = document.getElementById(`response-item-${focusedIndex}`);
+    if (el) {
+      el.scrollIntoView({ block: "nearest" });
+    }
+  }, [focusedIndex]);
+
   return (
     <div className={styles.page}>
       <div className={styles.searchContainer}>
@@ -118,16 +150,26 @@ export default function Home() {
           name="search-movie"
           hint="Utilize as teclas ↓ ↑ para navegar entre as opções"
           onChange={handleSearch}
+          inputRef={inputRef}
+          onKeyDown={handleKeyDown}
         />
       </div>
       {state.response.length > 0 && (
         <div className={styles.responsesContainer}>
           {state.response.map((mv: Movie, index: number) => (
-            <div key={`${mv.id}-${index}`}>
+            <div
+              key={`${mv.id}-${index}`}
+              id={`response-item-${index}`}
+              className={
+                index === focusedIndex
+                  ? `${styles.responseItem} ${styles.focused}`
+                  : styles.responseItem
+              }
+            >
               {index === 0 && validateTitleAndQuery(mv, state.query) ? (
                 <MovieCard movie={mv} />
               ) : (
-                renderMovie(mv.title, mv.original_title, state.query)
+                renderMovie(mv, state.query)
               )}
             </div>
           ))}

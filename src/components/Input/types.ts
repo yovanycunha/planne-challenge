@@ -6,4 +6,6 @@ export interface IInputProps {
   label?: string;
   hint?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }

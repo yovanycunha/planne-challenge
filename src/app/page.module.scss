@@ -21,6 +21,11 @@
     max-height: 416px;
     overflow: auto;
 
+    .focused {
+      border-radius: 8px;
+      background: #D2D2D2;
+    }
+
     .responseWrapper {
       font-weight: 600;
       font-size: 1.4rem;
@@ -28,7 +33,7 @@
       letter-spacing: 0;
       padding: 14px 12px;
       color: #464646;
-      background: white;
+      background: transparent;
 
       .response {
         .highlight {
@@ -57,3 +62,4 @@
     }
   }
 }
+

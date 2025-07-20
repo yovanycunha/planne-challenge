@@ -18,6 +18,8 @@ const Input: React.FC<IInputProps> = (props) => {
         onChange={handleChange}
         className={styles.input}
         id={props.name}
+        ref={props.inputRef}
+        onKeyDown={props.onKeyDown}
       />
       <span className={styles.hint}>{props.hint}</span>
     </div>
