@@ -3,7 +3,7 @@
 import { MovieService } from "@/services/movie.service";
 import styles from "./page.module.scss";
 import Input from "@/components/Input/Input";
-import { useReducer } from "react";
+import { useReducer, useRef, useCallback, useEffect } from "react";
 import { Movie } from "@/types";
 import {
   initialSearchState,
@@ -13,6 +13,8 @@ import MovieCard from "@/components/CardMovie/CardMovie";
 
 export default function Home() {
   const [state, dispatch] = useReducer(searchReducer, initialSearchState);
+  const observerRef = useRef<HTMLDivElement>(null);
+  const currentPage = useRef(1);
 
   const validateTitleAndQuery = (movie: Movie, query: string): boolean => {
     if (
@@ -24,15 +26,31 @@ export default function Home() {
     return true;
   };
 
+  const loadMoreMovies = useCallback(async () => {
+    if (!state.query || state.isResponseEmpty) return;
+
+    currentPage.current += 1;
+    const { data } = await MovieService.searchMovies(
+      state.query,
+      currentPage.current
+    );
+
+    if (data.results.length > 0) {
+      dispatch({ type: "APPEND_RESPONSE", payload: data.results });
+    }
+  }, [state.query, state.isResponseEmpty]);
+
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length < 3) {
       dispatch({ type: "SET_QUERY", payload: "" });
       dispatch({ type: "SET_RESPONSE", payload: [] });
       dispatch({ type: "SET_EMPTY_SEARCH", payload: false });
+      currentPage.current = 1;
       return;
     }
 
-    const { data } = await MovieService.searchMovies(e.target.value);
+    currentPage.current = 1;
+    const { data } = await MovieService.searchMovies(e.target.value, 1);
 
     if (data.total_results === 0) {
       dispatch({ type: "SET_EMPTY_SEARCH", payload: true });
@@ -74,7 +92,22 @@ export default function Home() {
     );
   }
 
-  console.log("state", state);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMoreMovies();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [loadMoreMovies]);
 
   return (
     <div className={styles.page}>
@@ -90,7 +123,7 @@ export default function Home() {
       {state.response.length > 0 && (
         <div className={styles.responsesContainer}>
           {state.response.map((mv: Movie, index: number) => (
-            <div key={mv.id}>
+            <div key={`${mv.id}-${index}`}>
               {index === 0 && validateTitleAndQuery(mv, state.query) ? (
                 <MovieCard movie={mv} />
               ) : (
@@ -98,6 +131,7 @@ export default function Home() {
               )}
             </div>
           ))}
+          <div ref={observerRef} />
         </div>
       )}
       {state.isResponseEmpty && (

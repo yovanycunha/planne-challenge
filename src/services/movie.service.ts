@@ -1,10 +1,10 @@
 import { tmdbApi } from "./client/client";
 
 export class MovieService {
-  static async searchMovies(query: string) {
+  static async searchMovies(query: string, currentPage: number) {
     try {
       const response = await tmdbApi.get(
-        `search/movie?query=${query}&include_adult=false&language=en-US&page=1`
+        `search/movie?query=${query}&include_adult=false&language=en-US&page=${currentPage}`
       );
 
       return response;

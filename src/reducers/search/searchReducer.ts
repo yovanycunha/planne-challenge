@@ -30,6 +30,13 @@ export function searchReducer(
       return { ...state, error: action.payload, loading: false };
     case "SET_EMPTY_SEARCH":
       return { ...state, isResponseEmpty: action.payload };
+    case "APPEND_RESPONSE":
+      return {
+        ...state,
+        response: [...state.response, ...action.payload],
+        isResponseEmpty: action.payload.length === 0,
+        loading: false,
+      };
     default:
       return state;
   }

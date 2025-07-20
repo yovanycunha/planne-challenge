@@ -12,4 +12,5 @@ export type SearchAction =
   | { type: "SET_LOADING"; payload: boolean }
   | { type: "SET_RESPONSE"; payload: Movie[] }
   | { type: "SET_ERROR"; payload: string | null }
-  | { type: "SET_EMPTY_SEARCH"; payload: boolean };
+  | { type: "SET_EMPTY_SEARCH"; payload: boolean }
+  | { type: "APPEND_RESPONSE"; payload: Movie[] };
