@@ -10,8 +10,12 @@ import {
   searchReducer,
 } from "@/reducers/search/searchReducer";
 import MovieCard from "@/components/CardMovie/CardMovie";
+import useIsDesktop from "@/hooks/useIsDesktop";
+import StarSVG from "./images/star-icon.svg";
 
 export default function Home() {
+  const isDesktop = useIsDesktop();
+
   const [state, dispatch] = useReducer(searchReducer, initialSearchState);
 
   const observerRef = useRef<HTMLDivElement>(null);
@@ -82,28 +86,40 @@ export default function Home() {
         (prev) => (prev - 1 + state.response.length) % state.response.length
       );
     }
+
+    if (e.key === " ") {
+      e.preventDefault();
+      console.log(state.response[focusedIndex]);
+    }
   };
 
-  function renderMovie(movie: Movie, query: string) {
+  function renderMovie(movie: Movie, query: string, index: number) {
+    const shouldRenderMobileFav = index === focusedIndex && !isDesktop;
     let outputTitle = movie.title;
-    let index = movie.title.toLowerCase().indexOf(query.toLowerCase());
+    let queryIndex = movie.title.toLowerCase().indexOf(query.toLowerCase());
 
-    if (index === -1) {
-      index = movie.original_title.toLowerCase().indexOf(query.toLowerCase());
+    if (queryIndex === -1) {
+      queryIndex = movie.original_title
+        .toLowerCase()
+        .indexOf(query.toLowerCase());
 
-      if (index === -1)
+      if (queryIndex === -1)
         return (
           <div className={styles.responseWrapper}>
             <p>{movie.title}</p>
+
+            <div className={styles.iconWrapper}>
+              {shouldRenderMobileFav && <StarSVG />}
+            </div>
           </div>
         );
 
       outputTitle = movie.original_title;
     }
 
-    const start = outputTitle.slice(0, index);
-    const match = outputTitle.slice(index, index + query.length);
-    const end = outputTitle.slice(index + query.length);
+    const start = outputTitle.slice(0, queryIndex);
+    const match = outputTitle.slice(queryIndex, queryIndex + query.length);
+    const end = outputTitle.slice(queryIndex + query.length);
 
     return (
       <div className={styles.responseWrapper}>
@@ -112,6 +128,10 @@ export default function Home() {
           <span className={styles.highlight}>{match}</span>
           {end}
         </p>
+
+        <div className={styles.iconWrapper}>
+          {shouldRenderMobileFav && <StarSVG />}
+        </div>
       </div>
     );
   }
@@ -139,9 +159,9 @@ export default function Home() {
 
   useEffect(() => {
     if (focusedIndex < 0) return;
-    const el = document.getElementById(`response-item-${focusedIndex}`);
-    if (el) {
-      el.scrollIntoView({ block: "nearest" });
+    const element = document.getElementById(`response-item-${focusedIndex}`);
+    if (element) {
+      element.scrollIntoView({ block: "nearest" });
     }
   }, [focusedIndex]);
 
@@ -169,7 +189,7 @@ export default function Home() {
               {index === 0 && validateTitleAndQuery(mv, state.query) ? (
                 <MovieCard movie={mv} />
               ) : (
-                renderMovie(mv, state.query)
+                renderMovie(mv, state.query, index)
               )}
             </div>
           ))}
