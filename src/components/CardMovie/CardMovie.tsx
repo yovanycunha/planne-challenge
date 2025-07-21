@@ -9,15 +9,19 @@ import StarSVG from "./images/star-icon.svg";
 import FavoriteSVG from "./images/is-fav-icon.svg";
 import { useCallback, useEffect, useState } from "react";
 import { useMovieStore } from "@/store/movie.store";
+import useIsDesktop from "@/hooks/useIsDesktop";
 
 const MovieCard: React.FC<IMovieCardProps> = ({
   movie,
   isFavorite,
   isFocused,
 }) => {
+  const isDesktop = useIsDesktop(768);
   const { addFavorite } = useMovieStore();
+
   const [genres, setGenres] = useState([]);
   const [imdbID, setImdbID] = useState("");
+  const [isHovered, setIsHovered] = useState(false);
 
   const containerClass = [styles.cardContainer];
 
@@ -67,7 +71,11 @@ const MovieCard: React.FC<IMovieCardProps> = ({
   }, []);
 
   return (
-    <div className={containerClass.join(" ")}>
+    <div
+      className={containerClass.join(" ")}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className={styles.infoWrapper} onClick={handleRedirect}>
         <div className={styles.imgContainer}>
           <Image
@@ -88,9 +96,11 @@ const MovieCard: React.FC<IMovieCardProps> = ({
           <div className={styles.genresWrapper}>{renderGenres()}</div>
         </div>
       </div>
-      <div className={styles.iconWrapper} onClick={handleFavorite}>
-        {isFavorite ? <FavoriteSVG /> : <StarSVG />}
-      </div>
+      {(isFocused || isHovered) && (
+        <div className={styles.iconWrapper} onClick={handleFavorite}>
+          {isFavorite ? <FavoriteSVG /> : <StarSVG />}
+        </div>
+      )}
     </div>
   );
 };
