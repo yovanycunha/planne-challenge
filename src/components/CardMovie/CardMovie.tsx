@@ -6,12 +6,20 @@ import { useQuery } from "@tanstack/react-query";
 import { MovieService } from "@/services/movie.service";
 import { MovieDetails } from "@/types";
 import ImageDefault from "./images/default_poster.png";
+import StarSVG from "./images/star-icon.svg";
+import FavoriteSVG from "./images/is-fav-icon.svg";
 
-const MovieCard: React.FC<IMovieCardProps> = ({ movie }) => {
+const MovieCard: React.FC<IMovieCardProps> = ({
+  movie,
+  isFavorite,
+  isFocused,
+}) => {
   const { data } = useQuery({
     queryKey: ["movieDetails"],
     queryFn: () => MovieService.searchMovie(movie.id),
   });
+
+  const containerClass = [styles.cardContainer];
 
   const getReleaseYear = (): string => {
     let releaseYear = "-";
@@ -45,25 +53,32 @@ const MovieCard: React.FC<IMovieCardProps> = ({ movie }) => {
       )
     );
 
+  if (isFocused) containerClass.push(styles.focused);
+
   return (
-    <div className={styles.cardContainer} onClick={handleRedirect}>
-      <div className={styles.imgContainer}>
-        <Image
-          alt={movie.title}
-          fill
-          style={{
-            objectFit: "cover",
-            borderRadius: "4px",
-          }}
-          src={getPoster()}
-        />
-      </div>
-      <div className={styles.infoContainer}>
-        <div className={styles.titleWrapper}>
-          <p className={styles.cardTitle}>{movie.title}</p>
-          <span className={styles.releaseYear}>({getReleaseYear()})</span>
+    <div className={containerClass.join(" ")} onClick={handleRedirect}>
+      <div className={styles.infoWrapper}>
+        <div className={styles.imgContainer}>
+          <Image
+            alt={movie.title}
+            fill
+            style={{
+              objectFit: "cover",
+              borderRadius: "4px",
+            }}
+            src={getPoster()}
+          />
         </div>
-        <div className={styles.genresWrapper}>{renderGenres()}</div>
+        <div className={styles.infoContainer}>
+          <div className={styles.titleWrapper}>
+            <p className={styles.cardTitle}>{movie.title}</p>
+            <span className={styles.releaseYear}>({getReleaseYear()})</span>
+          </div>
+          <div className={styles.genresWrapper}>{renderGenres()}</div>
+        </div>
+      </div>
+      <div className={styles.iconWrapper}>
+        {isFavorite ? <FavoriteSVG /> : <StarSVG />}
       </div>
     </div>
   );

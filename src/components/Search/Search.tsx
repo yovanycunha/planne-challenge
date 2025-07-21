@@ -14,7 +14,7 @@ import StarSVG from "./images/star-icon.svg";
 import FavoriteSVG from "./images/is-fav-icon.svg";
 
 const Search: React.FC = () => {
-  const { favorites, addFavorite, isFavorite } = useMovieStore();
+  const { addFavorite, isFavorite } = useMovieStore();
 
   const isDesktop = useIsDesktop();
 
@@ -29,8 +29,6 @@ const Search: React.FC = () => {
   const handleInputFocus = () => {
     setFocusedIndex(-1);
   };
-
-  const iconClass = [styles.iconWrapper];
 
   const validateTitleAndQuery = (movie: Movie, query: string): boolean => {
     if (
@@ -126,7 +124,7 @@ const Search: React.FC = () => {
           <div className={styles.responseWrapper}>
             <p>{movie.title}</p>
 
-            <div className={iconClass.join(" ")}>
+            <div className={styles.iconWrapper}>
               {shouldRenderMobileFav &&
                 (isFavorite(movie.id) ? <FavoriteSVG /> : <StarSVG />)}
             </div>
@@ -148,7 +146,7 @@ const Search: React.FC = () => {
           {end}
         </p>
 
-        <div className={iconClass.join(" ")}>
+        <div className={styles.iconWrapper}>
           {shouldRenderMobileFav &&
             (isFavorite(movie.id) ? <FavoriteSVG /> : <StarSVG />)}
         </div>
@@ -203,7 +201,11 @@ const Search: React.FC = () => {
               className={getFocusedStyle(index)}
             >
               {index === 0 && validateTitleAndQuery(mv, state.query) ? (
-                <MovieCard movie={mv} />
+                <MovieCard
+                  movie={mv}
+                  isFavorite={isFavorite(mv.id)}
+                  isFocused={focusedIndex === 0}
+                />
               ) : (
                 renderMovie(mv, state.query, index)
               )}
