@@ -12,6 +12,7 @@ import { Movie } from "@/types";
 import MovieCard from "../CardMovie/CardMovie";
 import StarSVG from "./images/star-icon.svg";
 import FavoriteSVG from "./images/is-fav-icon.svg";
+import ListMovieItem from "./components/ListMovieItem/ListMovieItem";
 
 const Search: React.FC = () => {
   const { addFavorite, isFavorite } = useMovieStore();
@@ -108,50 +109,6 @@ const Search: React.FC = () => {
     if (index === focusedIndex) return `${styles.focused}`;
   };
 
-  function renderMovie(movie: Movie, query: string, index: number) {
-    let outputTitle = movie.title;
-    let queryIndex = movie.title.toLowerCase().indexOf(query.toLowerCase());
-
-    if (queryIndex === -1) {
-      queryIndex = movie.original_title
-        .toLowerCase()
-        .indexOf(query.toLowerCase());
-
-      if (queryIndex === -1)
-        return (
-          <div className={styles.responseWrapper}>
-            <p>{movie.title}</p>
-
-            <div className={styles.iconWrapper}>
-              {index === focusedIndex &&
-                (isFavorite(movie.id) ? <FavoriteSVG /> : <StarSVG />)}
-            </div>
-          </div>
-        );
-
-      outputTitle = movie.original_title;
-    }
-
-    const start = outputTitle.slice(0, queryIndex);
-    const match = outputTitle.slice(queryIndex, queryIndex + query.length);
-    const end = outputTitle.slice(queryIndex + query.length);
-
-    return (
-      <div className={styles.responseWrapper}>
-        <p className={styles.response}>
-          {start}
-          <span className={styles.highlight}>{match}</span>
-          {end}
-        </p>
-
-        <div className={styles.iconWrapper} onClick={() => addFavorite(movie)}>
-          {index === focusedIndex &&
-            (isFavorite(movie.id) ? <FavoriteSVG /> : <StarSVG />)}
-        </div>
-      </div>
-    );
-  }
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -205,7 +162,12 @@ const Search: React.FC = () => {
                   isFocused={focusedIndex === 0}
                 />
               ) : (
-                renderMovie(mv, state.query, index)
+                <ListMovieItem
+                  movie={mv}
+                  isFocused={focusedIndex === index}
+                  query={state.query}
+                  key={mv.id}
+                />
               )}
             </div>
           ))}
