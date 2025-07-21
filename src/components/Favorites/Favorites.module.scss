@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .title {
+    font-size: 1.4rem;
+    line-height: 2rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: #464646;
+  }
+
+  .listContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px 12px;
+
+    border: 1px solid #8E8E8E;
+    border-radius: 8px;
+
+    &.hidden {
+      display: none;
+    }
+
+    .disclaimerContainer {
+      display: flex;
+      border-radius: 6px;
+      background: #E1F2FF;
+      padding: 10px;
+      gap: 8px;
+    
+      .disclaimerMsg {
+        font-size: 1.4rem;
+        line-height: 2rem;
+        font-weight: 600;
+      }
+    }
+  }
+}
