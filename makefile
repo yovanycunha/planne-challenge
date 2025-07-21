@@ -1,0 +1,7 @@
+setup:
+	touch	.env
+	echo "NEXT_PUBLIC_MOVIES_API="eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNTU0ZGRiN2YzZWU4NjY3NDc2ZWJmNGZkODk2ZTUzYSIsIm5iZiI6MTc0NzAxMzUzOS41NjQsInN1YiI6IjY4MjE0ZmEzYTA4Zjc3MDUwMTZlZTIwYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.53oz2kwJ_SQghWqOJ6OW9qu1jLePbqVhSwMpcbx-I0I"" > .env
+	yarn
+
+run:
+	yarn dev
