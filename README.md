@@ -12,7 +12,9 @@ Para executar o projeto é necessário:
 * Node.js ^18.18.0 || ^19.8.0 || >= 20.0.0
 * Conexão com a internet
 
-Os seguintes comandos devem ser executados:
+Executando localmente:
+* `git clone https://github.com/yovanycunha/planne-challenge.git`
+* `cd planne-challenge`
 * Com yarn:`yarn` ou com npm:`npm i`
 * Com yarn:`yarn dev` ou com npm:`npm run dev`
 
