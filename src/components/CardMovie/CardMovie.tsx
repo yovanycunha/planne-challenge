@@ -64,6 +64,22 @@ const MovieCard: React.FC<IMovieCardProps> = ({
     addFavorite(movie);
   };
 
+  const renderFavorite = () => (
+    <div className={styles.iconWrapper}>
+      <FavoriteSVG />
+    </div>
+  );
+
+  const renderStar = () => {
+    if (isHovered || isFocused) {
+      return (
+        <div className={styles.iconWrapper} onClick={handleFavorite}>
+          <StarSVG />
+        </div>
+      );
+    }
+  };
+
   if (isFocused) containerClass.push(styles.focused);
 
   useEffect(() => {
@@ -96,11 +112,7 @@ const MovieCard: React.FC<IMovieCardProps> = ({
           <div className={styles.genresWrapper}>{renderGenres()}</div>
         </div>
       </div>
-      {(isFocused || isHovered) && (
-        <div className={styles.iconWrapper} onClick={handleFavorite}>
-          {isFavorite ? <FavoriteSVG /> : <StarSVG />}
-        </div>
-      )}
+      {isFavorite ? renderFavorite() : renderStar()}
     </div>
   );
 };
