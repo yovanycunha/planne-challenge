@@ -1,13 +1,10 @@
 # Plane-Challenge
 Repositório contendo a solução para o problema proposto pela Planne para a vaga de Desenvolvedor Front End
 
-## Sobre a aplicação
-*TODO*
-
 ## Tecnologias
 * [`NextJs`](https://nextjs.org/)
-* [`TanStack Query (React Query)`]() *TODO*
-* [`SAAS`]() *TODO*
+* [`TanStack Query (React Query)`](https://tanstack.com/query/latest)
+* [`Zustand`](https://zustand.docs.pmnd.rs/getting-started/introduction)
 
 ## Setup
 Para executar o projeto é necessário:
