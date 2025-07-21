@@ -12,8 +12,12 @@ import {
 import MovieCard from "@/components/CardMovie/CardMovie";
 import useIsDesktop from "@/hooks/useIsDesktop";
 import StarSVG from "./images/star-icon.svg";
+import FavoriteSVG from "./images/is-fav-icon.svg";
+import { useMovieStore } from "@/store/movie.store";
 
 export default function Home() {
+  const { favorites, addFavorite, isFavorite } = useMovieStore();
+
   const isDesktop = useIsDesktop();
 
   const [state, dispatch] = useReducer(searchReducer, initialSearchState);
@@ -23,6 +27,8 @@ export default function Home() {
   const currentPage = useRef(1);
 
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
+
+  const iconClass = [styles.iconWrapper];
 
   const validateTitleAndQuery = (movie: Movie, query: string): boolean => {
     if (
@@ -89,14 +95,15 @@ export default function Home() {
 
     if (e.key === " ") {
       e.preventDefault();
-      console.log(state.response[focusedIndex]);
+      addFavorite(state.response[focusedIndex]);
     }
   };
 
   function renderMovie(movie: Movie, query: string, index: number) {
-    const shouldRenderMobileFav = index === focusedIndex && !isDesktop;
     let outputTitle = movie.title;
     let queryIndex = movie.title.toLowerCase().indexOf(query.toLowerCase());
+
+    const shouldRenderMobileFav = index === focusedIndex && !isDesktop;
 
     if (queryIndex === -1) {
       queryIndex = movie.original_title
@@ -108,8 +115,9 @@ export default function Home() {
           <div className={styles.responseWrapper}>
             <p>{movie.title}</p>
 
-            <div className={styles.iconWrapper}>
-              {shouldRenderMobileFav && <StarSVG />}
+            <div className={iconClass.join(" ")}>
+              {shouldRenderMobileFav &&
+                (isFavorite(movie.id) ? <FavoriteSVG /> : <StarSVG />)}
             </div>
           </div>
         );
@@ -129,8 +137,9 @@ export default function Home() {
           {end}
         </p>
 
-        <div className={styles.iconWrapper}>
-          {shouldRenderMobileFav && <StarSVG />}
+        <div className={iconClass.join(" ")}>
+          {shouldRenderMobileFav &&
+            (isFavorite(movie.id) ? <FavoriteSVG /> : <StarSVG />)}
         </div>
       </div>
     );
