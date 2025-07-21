@@ -1,11 +1,28 @@
+@use '../styles/breakpoints.scss' as br;
+
 .main {
   display: flex;
   flex-direction: column;
-  padding: 32px;
+  padding: 16px 8px;
   gap: 12px;
 
   font-size: 1.4rem;
   line-height: 2rem;
   letter-spacing: 0;
   color: #464646;
+
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+@include br.from700 {
+  .main {
+    padding: 24px 12px;
+  }
+}
+
+@include br.from1024 {
+  .main {
+    padding: 32px;
+  }
 }
