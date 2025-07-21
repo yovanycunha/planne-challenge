@@ -112,8 +112,6 @@ const Search: React.FC = () => {
     let outputTitle = movie.title;
     let queryIndex = movie.title.toLowerCase().indexOf(query.toLowerCase());
 
-    const shouldRenderMobileFav = index === focusedIndex && !isDesktop;
-
     if (queryIndex === -1) {
       queryIndex = movie.original_title
         .toLowerCase()
@@ -125,7 +123,7 @@ const Search: React.FC = () => {
             <p>{movie.title}</p>
 
             <div className={styles.iconWrapper}>
-              {shouldRenderMobileFav &&
+              {index === focusedIndex &&
                 (isFavorite(movie.id) ? <FavoriteSVG /> : <StarSVG />)}
             </div>
           </div>
@@ -146,8 +144,8 @@ const Search: React.FC = () => {
           {end}
         </p>
 
-        <div className={styles.iconWrapper}>
-          {shouldRenderMobileFav &&
+        <div className={styles.iconWrapper} onClick={() => addFavorite(movie)}>
+          {index === focusedIndex &&
             (isFavorite(movie.id) ? <FavoriteSVG /> : <StarSVG />)}
         </div>
       </div>

@@ -1,3 +1,5 @@
+@use '../../styles/breakpoints' as br;
+
 .container {
   display: flex;
   flex-direction: column;
@@ -19,23 +21,43 @@
 
     border: 1px solid #8E8E8E;
     border-radius: 8px;
+    position: relative;
 
     &.hidden {
       display: none;
+      visibility: hidden;
     }
-
-    .disclaimerContainer {
-      display: flex;
-      border-radius: 6px;
-      background: #E1F2FF;
-      padding: 10px;
-      gap: 8px;
     
-      .disclaimerMsg {
-        font-size: 1.4rem;
-        line-height: 2rem;
-        font-weight: 600;
-      }
+  }
+  .disclaimerContainer {
+    display: flex;
+    border-radius: 6px;
+    background: #E1F2FF;
+    padding: 10px;
+    gap: 8px;
+    width: 100%;
+  
+    .disclaimerMsg {
+      font-size: 1.4rem;
+      line-height: 2rem;
+      font-weight: 600;
+    }
+  }
+}
+
+@include br.from700 {
+  .container{
+    .listContainer {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+@include br.from1024 {
+  .container{
+    .listContainer{
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 }

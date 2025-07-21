@@ -7,7 +7,7 @@ const Favorites: React.FC = () => {
 
   const listContainerClass = [styles.listContainer];
 
-  // if (favorites.length === 0) listContainerClass.push(styles.hidden);
+  if (favorites.length === 0) listContainerClass.push(styles.hidden);
 
   return (
     <section className={styles.container}>
@@ -21,17 +21,15 @@ const Favorites: React.FC = () => {
             isFocused={false}
           />
         ))}
-        {favorites.length === 0 && (
-          <div className={styles.responsesContainer}>
-            <div className={styles.disclaimerContainer}>
-              <p className={styles.disclaimerMsg}>
-                Ops, nada por aqui ainda. Marque filmes como favoritos para
-                vê-los listados aqui!
-              </p>
-            </div>
-          </div>
-        )}
       </div>
+      {favorites.length === 0 && (
+        <div className={styles.disclaimerContainer}>
+          <p className={styles.disclaimerMsg}>
+            Ops, nada por aqui ainda. Marque filmes como favoritos para vê-los
+            listados aqui!
+          </p>
+        </div>
+      )}
     </section>
   );
 };

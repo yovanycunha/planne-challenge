@@ -1,0 +1,49 @@
+$smartphoneExtraSmall: 320px;
+$smartphone: 480px;
+$tabletSmall: 700px;
+$tabletMedium: 768px;
+$pcSmall: 1024px;
+$pcMedium: 1280px;
+$pcLarge: 1440px;
+
+@mixin from320() {
+  @media screen and (min-width: $smartphoneExtraSmall) {
+    @content;
+  }
+}
+
+@mixin from480() {
+  @media screen and (min-width: $smartphone) {
+    @content;
+  }
+}
+
+@mixin from700(){
+  @media screen and (min-width: $tabletSmall) {
+    @content;
+  }
+}
+
+@mixin from768() {
+  @media screen and (min-width: $tabletMedium) {
+    @content;
+  }
+}
+
+@mixin from1024() {
+  @media screen and (min-width: $pcSmall) {
+    @content;
+  }
+}
+
+@mixin from1280() {
+  @media screen and (min-width: $pcMedium) {
+    @content;
+  }
+}
+
+@mixin from1440() {
+  @media screen and (min-width: $pcLarge) {
+    @content;
+  }
+}

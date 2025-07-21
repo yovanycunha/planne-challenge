@@ -1,7 +1,12 @@
+@use '../../styles/breakpoints' as br;
+
 .container {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 
   .inputContainer {
     display: flex;
@@ -34,6 +39,11 @@
       background: transparent;
       display: flex;
       justify-content: space-between;
+
+      &:hover {
+        border-radius: 8px;
+        background: #D2D2D2;
+      }
 
       .iconWrapper {
         display: block;
