@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Movie } from "@/types"; // Adjust the import path as needed
+import { Movie } from "@/types";
 
 interface MovieStoreState {
   favorites: Movie[];
