@@ -28,6 +28,9 @@ Sobre as tecnologias escolhidas para o início do projeto, decidi usar:
 - Para a responsividade utilizei valores de breakpoints que sempre uso e a partir desses `mixin`s fiz as alterações partindo sempre da resolução menor para a maior.
 - Os valores e os `mixin`s dos breakpoints estão encapsulados em um arquivo a parte, estratégia que sempre uso quando trabalho com `SASS`.
 
-## TODO
+## TODOs e Dificuldades
 - Sobre o que eu faria se tivesse mais tempo, eu poderia gerenciar melhor os estados da busca, uma vez que apesar de encapsular muita coisa no `useReducer`, a medida que fui criando mais implementações novos `useState`s foram criados e podiam ser encapsulados no reducer também.
 - A implementação de um loading e dos componentes header e footer, secções que utilizem opções da API, como filmes em alta, novos filmes são opções que eu implementaria.
+- Uma dificuldade inicial que tive foi em relação a organização das implementações. Mesmo depois de ler e reler as instruções várias vezes eu me pegava perdido entre pesquisar algo e realmente implementar, não fazendo nenhuma das coisas direito. Dessa forma decidi criar um quadro Kanban para definir atividades e priorizar melhor o que precisava ser implementado. Aqui está um print do quadro mostrando como separei as atividades
+
+![Quadro Kanbam - Planne Challenge](./public/image.png)
