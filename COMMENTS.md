@@ -3,17 +3,31 @@
 Sobre as tecnologias escolhidas para o início do projeto, decidi usar:
 - Estilização -> SASS
 - Fetch -> Axios
-- State Management -> 
-- Documentação dos componentes -> Storybook (talvez)
+- State Management -> Zustand
+- API de filmes -> TMDB 
 
 ## Features
-Live Search aproach
+### Busca de filmes 
 - Criação de um service para os filmes
   - Centralizar todas as chamadas referentes aos filmes
   - Possibilita a expansão para novos cenários em caso de futuras melhorias sem alterar o cenário atual.
 - Consumir esse service a partir das alterações no input de busca
   - Utilizar o parâmetro `onChange` do input para a cada letra digitada seja refeita a busca com o novo valor atualizado.
+- A implementação da resposta da busca me levou para a implementação do filme em destaque, onde abordei validando se o título do filme corresponde exatamente à query digitada pelo usuário e se era a primeira ocorrência da resposta da API. Aqui tive que trabalhar por uma questão de como a API responde a pesquisa. Dada uma query ela retorna filmes onde o `title` ou o `original_title` façam menção a essa query. Trabalhei para que na medida do possível o título renderizado na tela fosse o correspondente a query digitada, hora renderizando o `original_title`, hora renderizando o `title` padrão, dando sempre preferência para o padrão. Esse item em destaque foi componentizado e alocado como um componente geral pois idealizei usar o mesmo componente para na renderização da lista de favoritos.
+- Esse trabalho na validação dos títulos retornados pela API também foi base para outro ponto pedido do teste, a diferenciação dos caracteres que deram match no resultado do live search. Depois de validar qual título eu renderizaria na tela, eu separava a `string` do título em 3 partes [`start`, `match`, `end`]. O `start` e o `end` são, respectivamente, as partes anteriores e posteriores que não seriam destacadas, o `match` é a sequência de caracteres do título que é condizente com a query digitada pelo usuário e que vai ser destacada.
+- Componentizei os itens que seriam renderizados na lista de resposta da busca em `ListMovieItem` visando principalmente dar a cada item na lista a possibilidade de gerenciar o estado de favorito. Esse componente foi alocado dentro do componente da secção de busca uma vez que ele não seria utilizado em nenhum outro componente do projeto.
+- Durante a implementação da busca vazia e sua resposta o componente chegou em um momento de ter muitos `useState`s definidos para me auxiliar no gerenciamento da query, e das respostas e se a resposta era vazia ou não. Nesse momento decidi encapsular esses comportamentos em um `useReducer` focado nas ações referentes a busca. Desse modo criei um hook onde eu previamente idealizei também que poderia ser útil no momento da paginação. O Hook conta com 6 cases (mais o default), sendo que dois deles (loading e error) terminaram não sendo utilizados no decorrer das implementações, e também conta com o estado inicial do reducer `initialSearchState`.
+- A implementação da navegação através das teclas foi bem desafiadora que me tomou algum tempo. Depois de algumas pesquisas e conhecimento prévio sobre a `DOM` cheguei a uma solução que envolvia alguns passos. Utilizando um estado inicial para gerenciar o índice que estava em foco (`focusedIndex`) e partindo do campo de `Input`, utilizei a função `onKeyDown` para navegar pelos itens listados nas respostas que estavam marcados com um `id` para cada item (o id é criado a partir de uma string fixa `response-item` concatenada com o índice do item na lista. Ex.: `response-item-0`). Esse `id` era utilizado pelo `getElementById` dentro de um `useEffect` e a medida que o `onKeyDown` altera o índice do item em foco, o `useEffect` realiza o scroll da lista utilizando o método `scrollIntoView`.
+- Fiquei em dúvida se a implementação do scroll infinito cancelaria a necessidade da paginação, mas escolhi apresentar essa solução por julgar mais interessante do que a paginação. Também me foi bem desafiador e precisei relembrar de algumas coisas que só havia utilizado uma vez. Para implementar o scroll infinito criei um observer ( uma instância do `IntersectionObserver`) que em algum ponto engatilharia a nova requisição dos itens. Criei mais um case no `useReducer`, responsável pelo gerenciamento da busca, que com a query informada e um valor para o parâmetro `page` da API, fazia uma nova requisição e concatena os resultados da nova busca nos resultados obtidos anteriormente. A ação de carregar novos filmes foi encapsulada em uma função a parte `loadMoreMovies` e essa função foi reutilizada também para atualizar a navegação por teclas, para que quando o usuário estiver próximo ao fim da lista atual, seja engatilhada para aumentar a lista de respostas. O service responsável pelas buscas de filme também foi atualizado para a requisição recebendo novos valores para a `page`. 
 
+### Favoritos
+- A implementação dos favoritos gerou a necessidade de ter no projeto um gerenciador de estados, como redux ou zustand, pois essa lista vai ser lida e atualizada em diversos pontos por todo o projeto. A configuração inicial do zustand é bem mais amigável e rápida, fazendo essa tech ser escolhida.
+- A ação de favoritar usando a tecla de espaço foi adicionada na função responsável pela navegação A API escolhida foi muito útil nesse momento pois facilitaria a implementação de qualquer uma das opções. Posteriormente isso gerou um bug onde o usuário não conseguia digitar a tecla de espaço no input de busca. Esse bug foi bem trabalhoso e solucionei gerenciando o `focusedIndex` e apenas liberando a ação de favoritar apenas qnd o `focusedIndex` fosse diferente de -1, que é o valor que define que o focus está no input.
 
-## Componentização
-- Encapsulamento do Input em um componente a parte permite o reuso facilitado por todo o projeto em alguma necessidade futura e facilita o entendimento do código a partir da separação do código em partes menores e de fáceis compreensão.
+### Responsividade
+- Para a responsividade utilizei valores de breakpoints que sempre uso e a partir desses `mixin`s fiz as alterações partindo sempre da resolução menor para a maior.
+- Os valores e os `mixin`s dos breakpoints estão encapsulados em um arquivo a parte, estratégia que sempre uso quando trabalho com `SASS`.
+
+## TODO
+- Sobre o que eu faria se tivesse mais tempo, eu poderia gerenciar melhor os estados da busca, uma vez que apesar de encapsular muita coisa no `useReducer`, a medida que fui criando mais implementações novos `useState`s foram criados e podiam ser encapsulados no reducer também.
+- A implementação de um loading e dos componentes header e footer, secções que utilizem opções da API, como filmes em alta, novos filmes são opções que eu implementaria.
