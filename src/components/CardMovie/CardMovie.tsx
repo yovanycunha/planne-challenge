@@ -55,7 +55,6 @@ const MovieCard: React.FC<IMovieCardProps> = ({ movie }) => {
             objectFit: "cover",
             borderRadius: "4px",
           }}
-          // src={`${POSTER_URL}${movie.poster_path}`}
           src={getPoster()}
         />
       </div>

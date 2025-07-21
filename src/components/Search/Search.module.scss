@@ -1,0 +1,71 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  gap: 4px;
+
+  .inputContainer {
+    display: flex;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .responsesContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    border: 1px solid #8E8E8E;
+    border-radius: 8px;
+    gap: 4px;
+    max-height: 416px;
+    overflow: auto;
+
+    .focused {
+      border-radius: 8px;
+      background: #D2D2D2;
+    }
+
+    .responseWrapper {
+      font-weight: 600;
+      font-size: 1.4rem;
+      line-height: 2rem;
+      letter-spacing: 0;
+      padding: 14px 12px;
+      color: #464646;
+      background: transparent;
+      display: flex;
+      justify-content: space-between;
+
+      .iconWrapper {
+        display: block;
+        height: 20px;
+        width: 20px;
+      }
+
+      .response {
+        .highlight {
+          color: #0092FF;
+        }
+      }
+    }
+
+    .disclaimerContainer {
+      display: flex;
+      border-radius: 6px;
+      background: #E1F2FF;
+      padding: 10px;
+      gap: 8px;
+    
+      .disclaimerMsg {
+        font-size: 1.4rem;
+        line-height: 2rem;
+        font-weight: 600;
+
+        .disclaimerLink {
+          color: #1a0dab;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
