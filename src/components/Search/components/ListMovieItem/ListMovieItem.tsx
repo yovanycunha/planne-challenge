@@ -15,6 +15,22 @@ const ListMovieItem: React.FC<IListMovieProps> = ({
 
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
+  const renderFavorite = () => (
+    <div className={styles.iconWrapper}>
+      <FavoriteSVG />
+    </div>
+  );
+
+  const renderStar = () => {
+    if (isHovered || isFocused) {
+      return (
+        <div className={styles.iconWrapper} onClick={() => addFavorite(movie)}>
+          <StarSVG />
+        </div>
+      );
+    }
+  };
+
   const renderFullItem = (start: string, match: string, end: string) => (
     <div
       className={styles.responseWrapper}
@@ -27,11 +43,7 @@ const ListMovieItem: React.FC<IListMovieProps> = ({
         {end}
       </p>
 
-      {(isFocused || isHovered) && (
-        <div className={styles.iconWrapper} onClick={() => addFavorite(movie)}>
-          {isFavorite(movie.id) ? <FavoriteSVG /> : <StarSVG />}
-        </div>
-      )}
+      {isFavorite(movie.id) ? renderFavorite() : renderStar()}
     </div>
   );
 
@@ -43,11 +55,7 @@ const ListMovieItem: React.FC<IListMovieProps> = ({
     >
       <p>{movie.title}</p>
 
-      {(isFocused || isHovered) && (
-        <div className={styles.iconWrapper} onClick={() => addFavorite(movie)}>
-          {isFocused && isFavorite(movie.id) ? <FavoriteSVG /> : <StarSVG />}
-        </div>
-      )}
+      {isFavorite(movie.id) ? renderFavorite() : renderStar()}
     </div>
   );
 
