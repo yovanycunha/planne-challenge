@@ -25,13 +25,9 @@ const Search: React.FC = () => {
   const currentPage = useRef(1);
 
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
-  const [inputFocused, setInputFocused] = useState(false);
 
   const handleInputFocus = () => {
-    setInputFocused(true);
-  };
-  const handleInputBlur = () => {
-    setInputFocused(false);
+    setFocusedIndex(-1);
   };
 
   const iconClass = [styles.iconWrapper];
@@ -65,7 +61,6 @@ const Search: React.FC = () => {
 
     dispatch({ type: "SET_QUERY", payload: e.target.value });
     dispatch({ type: "SET_RESPONSE", payload: data.results });
-    setFocusedIndex(data.results.length > 0 ? 0 : -1);
   };
 
   const loadMoreMovies = useCallback(async () => {
@@ -84,6 +79,7 @@ const Search: React.FC = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (state.response.length === 0) return;
+
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setFocusedIndex((prev) => (prev + 1) % state.response.length);
@@ -91,18 +87,23 @@ const Search: React.FC = () => {
       if (focusedIndex === state.response.length - 2) {
         loadMoreMovies();
       }
+      return;
     }
     if (e.key === "ArrowUp") {
       e.preventDefault();
       setFocusedIndex(
         (prev) => (prev - 1 + state.response.length) % state.response.length
       );
+      return;
     }
 
-    if (e.key === " " && !inputFocused) {
+    if (e.key === " " && focusedIndex !== -1) {
       e.preventDefault();
       addFavorite(state.response[focusedIndex]);
+      return;
     }
+
+    setFocusedIndex(-1);
   };
 
   const getFocusedStyle = (index: number) => {
@@ -182,11 +183,7 @@ const Search: React.FC = () => {
 
   return (
     <section className={styles.container}>
-      <div
-        className={styles.inputContainer}
-        onFocusCapture={handleInputFocus}
-        onBlurCapture={handleInputBlur}
-      >
+      <div className={styles.inputContainer} onClick={handleInputFocus}>
         <Input
           label="Pesquise um Filme"
           placeholder="Ex: Star Wars"
