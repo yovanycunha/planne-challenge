@@ -17,7 +17,7 @@ const MovieCard: React.FC<IMovieCardProps> = ({
   isFocused,
 }) => {
   const isDesktop = useIsDesktop(768);
-  const { addFavorite } = useMovieStore();
+  const { addFavorite, removeFavorite } = useMovieStore();
 
   const [genres, setGenres] = useState([]);
   const [imdbID, setImdbID] = useState("");
@@ -61,11 +61,12 @@ const MovieCard: React.FC<IMovieCardProps> = ({
   }, []);
 
   const handleFavorite = () => {
-    addFavorite(movie);
+    if (isFavorite) removeFavorite(movie.id);
+    else addFavorite(movie);
   };
 
   const renderFavorite = () => (
-    <div className={styles.iconWrapper}>
+    <div className={styles.iconWrapper} onClick={handleFavorite}>
       <FavoriteSVG />
     </div>
   );

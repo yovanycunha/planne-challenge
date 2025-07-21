@@ -15,7 +15,7 @@ import FavoriteSVG from "./images/is-fav-icon.svg";
 import ListMovieItem from "./components/ListMovieItem/ListMovieItem";
 
 const Search: React.FC = () => {
-  const { addFavorite, isFavorite } = useMovieStore();
+  const { addFavorite, isFavorite, removeFavorite } = useMovieStore();
 
   const isDesktop = useIsDesktop();
 
@@ -98,7 +98,12 @@ const Search: React.FC = () => {
 
     if (e.key === " " && focusedIndex !== -1) {
       e.preventDefault();
-      addFavorite(state.response[focusedIndex]);
+      if (isFavorite(state.response[focusedIndex].id)) {
+        removeFavorite(state.response[focusedIndex].id);
+      } else {
+        addFavorite(state.response[focusedIndex]);
+      }
+
       return;
     }
 

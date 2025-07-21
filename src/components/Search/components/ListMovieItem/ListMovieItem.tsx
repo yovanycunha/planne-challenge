@@ -11,12 +11,17 @@ const ListMovieItem: React.FC<IListMovieProps> = ({
   query,
   isFocused,
 }) => {
-  const { addFavorite, isFavorite } = useMovieStore();
+  const { addFavorite, isFavorite, removeFavorite } = useMovieStore();
 
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
+  const handleFavorite = () => {
+    if (isFavorite(movie.id)) removeFavorite(movie.id);
+    else addFavorite(movie);
+  };
+
   const renderFavorite = () => (
-    <div className={styles.iconWrapper}>
+    <div className={styles.iconWrapper} onClick={handleFavorite}>
       <FavoriteSVG />
     </div>
   );
@@ -24,7 +29,7 @@ const ListMovieItem: React.FC<IListMovieProps> = ({
   const renderStar = () => {
     if (isHovered || isFocused) {
       return (
-        <div className={styles.iconWrapper} onClick={() => addFavorite(movie)}>
+        <div className={styles.iconWrapper} onClick={handleFavorite}>
           <StarSVG />
         </div>
       );
