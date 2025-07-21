@@ -15,8 +15,8 @@ Para executar o projeto é necessário:
 Executando localmente:
 * `git clone https://github.com/yovanycunha/planne-challenge.git`
 * `cd planne-challenge`
-* Com yarn:`yarn` ou com npm:`npm i`
-* Com yarn:`yarn dev` ou com npm:`npm run dev`
+* `make setup` para criar o .env com os valores
+* Com yarn:`yarn dev` ou com npm:`npm run dev` ou `make run`
 
 ## Créditos
 [Yovany Marroquin da Cunha](https://yovanycunha.github.io)
