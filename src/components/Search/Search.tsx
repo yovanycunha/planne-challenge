@@ -1,7 +1,6 @@
 import { useMovieStore } from "@/store/movie.store";
 import Input from "../Input/Input";
-import useIsDesktop from "@/hooks/useIsDesktop";
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 import {
   initialSearchState,
   searchReducer,
@@ -10,14 +9,10 @@ import styles from "./Search.module.scss";
 import { MovieService } from "@/services/movie.service";
 import { Movie } from "@/types";
 import MovieCard from "../CardMovie/CardMovie";
-import StarSVG from "./images/star-icon.svg";
-import FavoriteSVG from "./images/is-fav-icon.svg";
 import ListMovieItem from "./components/ListMovieItem/ListMovieItem";
 
 const Search: React.FC = () => {
   const { addFavorite, isFavorite, removeFavorite } = useMovieStore();
-
-  const isDesktop = useIsDesktop();
 
   const [state, dispatch] = useReducer(searchReducer, initialSearchState);
 
@@ -25,10 +20,8 @@ const Search: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const currentPage = useRef(1);
 
-  const [focusedIndex, setFocusedIndex] = useState<number>(-1);
-
   const handleInputFocus = () => {
-    setFocusedIndex(-1);
+    dispatch({ type: "SET_FOCUSED_INDEX", payload: -1 });
   };
 
   const validateTitleAndQuery = (movie: Movie, query: string): boolean => {
@@ -46,8 +39,8 @@ const Search: React.FC = () => {
       dispatch({ type: "SET_QUERY", payload: "" });
       dispatch({ type: "SET_RESPONSE", payload: [] });
       dispatch({ type: "SET_EMPTY_SEARCH", payload: false });
+      dispatch({ type: "SET_FOCUSED_INDEX", payload: -1 });
       currentPage.current = 1;
-      setFocusedIndex(-1);
       return;
     }
 
@@ -81,37 +74,43 @@ const Search: React.FC = () => {
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setFocusedIndex((prev) => (prev + 1) % state.response.length);
+      dispatch({
+        type: "SET_FOCUSED_INDEX",
+        payload: (state.focusedIndex + 1) % state.response.length,
+      });
 
-      if (focusedIndex === state.response.length - 2) {
+      if (state.focusedIndex === state.response.length - 2) {
         loadMoreMovies();
       }
       return;
     }
     if (e.key === "ArrowUp") {
       e.preventDefault();
-      setFocusedIndex(
-        (prev) => (prev - 1 + state.response.length) % state.response.length
-      );
+      dispatch({
+        type: "SET_FOCUSED_INDEX",
+        payload:
+          (state.focusedIndex - 1 + state.response.length) %
+          state.response.length,
+      });
       return;
     }
 
-    if (e.key === " " && focusedIndex !== -1) {
+    if (e.key === " " && state.focusedIndex !== -1) {
       e.preventDefault();
-      if (isFavorite(state.response[focusedIndex].id)) {
-        removeFavorite(state.response[focusedIndex].id);
+      if (isFavorite(state.response[state.focusedIndex].id)) {
+        removeFavorite(state.response[state.focusedIndex].id);
       } else {
-        addFavorite(state.response[focusedIndex]);
+        addFavorite(state.response[state.focusedIndex]);
       }
 
       return;
     }
 
-    setFocusedIndex(-1);
+    dispatch({ type: "SET_FOCUSED_INDEX", payload: -1 });
   };
 
   const getFocusedStyle = (index: number) => {
-    if (index === focusedIndex) return `${styles.focused}`;
+    if (index === state.focusedIndex) return `${styles.focused}`;
   };
 
   useEffect(() => {
@@ -132,12 +131,14 @@ const Search: React.FC = () => {
   }, [loadMoreMovies]);
 
   useEffect(() => {
-    if (focusedIndex < 0) return;
-    const element = document.getElementById(`response-item-${focusedIndex}`);
+    if (state.focusedIndex < 0) return;
+    const element = document.getElementById(
+      `response-item-${state.focusedIndex}`
+    );
     if (element) {
       element.scrollIntoView({ block: "nearest" });
     }
-  }, [focusedIndex]);
+  }, [state.focusedIndex]);
 
   return (
     <section className={styles.container}>
@@ -164,12 +165,12 @@ const Search: React.FC = () => {
                 <MovieCard
                   movie={mv}
                   isFavorite={isFavorite(mv.id)}
-                  isFocused={focusedIndex === 0}
+                  isFocused={state.focusedIndex === 0}
                 />
               ) : (
                 <ListMovieItem
                   movie={mv}
-                  isFocused={focusedIndex === index}
+                  isFocused={state.focusedIndex === index}
                   query={state.query}
                   key={mv.id}
                 />

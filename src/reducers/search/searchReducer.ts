@@ -7,6 +7,7 @@ export const initialSearchState: SearchState = {
   loading: false,
   error: null,
   isSearchEmpty: false,
+  focusedIndex: -1,
 };
 
 export function searchReducer(
@@ -36,6 +37,11 @@ export function searchReducer(
         response: [...state.response, ...action.payload],
         isResponseEmpty: action.payload.length === 0,
         loading: false,
+      };
+    case "SET_FOCUSED_INDEX":
+      return {
+        ...state,
+        focusedIndex: action.payload,
       };
     default:
       return state;
